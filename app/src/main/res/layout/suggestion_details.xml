@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    >
+    <FrameLayout
+        android:id="@+id/suggestionContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include
+            layout="@layout/suggestion_itemview"/>
+    </FrameLayout>
+
+    <View
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:background="@color/colorBlack"
+        android:layout_height="1dp" />
+
+    <TextView
+        android:id="@+id/lblComments"
+        style="@style/SubHeaderText"
+        android:text="Comments"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/commentRecycler"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

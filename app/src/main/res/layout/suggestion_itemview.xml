@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_new_releases_black_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/lblCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/HeaderText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imgIcon"
+        app:layout_constraintEnd_toStartOf="@id/btnExpand"
+        />
+
+    <TextView
+        android:id="@+id/lblSubject"
+        style="@style/SubHeaderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/lblCategory"
+        app:layout_constraintTop_toBottomOf="@id/lblCategory"
+        app:layout_constraintEnd_toEndOf="@id/lblCategory"
+        />
+
+    <ImageButton
+        android:id="@+id/btnExpand"
+        android:src="@drawable/ic_arrow_left_black_24dp"
+        android:background="@null"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/lblSubject"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/detailContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgIcon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <TextView
+            android:id="@+id/lblDatePosted"
+            style="@style/MetaText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <LinearLayout
+            android:id="@+id/likeContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/lblDatePosted"
+            app:layout_constraintStart_toStartOf="@id/lblDatePosted"
+            app:layout_constraintEnd_toEndOf="@id/lblDatePosted"
+            >
+            <ImageButton
+                android:id="@+id/btnLike"
+                android:src="@drawable/ic_thumb_up_black_24dp"
+                android:background="@null"
+                android:tint="@color/colorLightBlue"
+                android:layout_width="45dp"
+                android:layout_height="45dp"/>
+            <TextView
+                android:id="@+id/lblLike"
+                style="@style/MetaText"
+                android:textStyle="italic"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                />
+
+            <TextView
+                android:id="@+id/lblDislike"
+                style="@style/MetaText"
+                android:textStyle="italic"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/btnDislike"
+                android:src="@drawable/ic_thumb_down_black_24dp"
+                android:layout_gravity="end"
+                android:background="@null"
+                android:tint="@color/colorLightRed"
+                android:layout_width="45dp"
+                android:layout_height="45dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/txtBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:inputType="textMultiLine|textNoSuggestions"
+            style="@style/ContentText"
+            android:text="I have an issue with the way the campus runs the parking lot. I think that students with permits should get priority parking and those without should not be allowed."
+            app:layout_constraintTop_toBottomOf="@id/likeContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
