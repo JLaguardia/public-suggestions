@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.prismsoftworks.publicsuggestions.adapter.SuggestionAdapter
@@ -28,6 +30,8 @@ class MainActivity : AppCompatActivity() {
         LayoutInflater.from(this).inflate(R.layout.lone_recycler, contentLayout)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = SuggestionAdapter().setItems(generateItems()).setReadOnly(true)
+//        (recyclerView.adapter as SuggestionAdapter).notifyDataSetChanged()
+        recyclerView.layoutAnimation = AnimationUtils.loadLayoutAnimation(this, R.anim.la_falldown)
     }
 
     private fun generateItems(): List<Suggestion> {

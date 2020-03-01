@@ -36,7 +36,7 @@
 
     <ImageButton
         android:id="@+id/btnExpand"
-        android:src="@drawable/ic_arrow_left_black_24dp"
+        android:src="@drawable/ic_arrow_down_black_24dp"
         android:background="@null"
         android:layout_width="45dp"
         android:layout_height="45dp"
@@ -52,6 +52,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:paddingTop="24dp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imgIcon"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -124,7 +125,6 @@
             android:layout_marginTop="16dp"
             android:inputType="textMultiLine|textNoSuggestions"
             style="@style/ContentText"
-            android:text="I have an issue with the way the campus runs the parking lot. I think that students with permits should get priority parking and those without should not be allowed."
             app:layout_constraintTop_toBottomOf="@id/likeContainer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -1,7 +1,13 @@
 package com.prismsoftworks.publicsuggestions.view
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -12,6 +18,7 @@ import com.prismsoftworks.publicsuggestions.model.Hits
 import com.prismsoftworks.publicsuggestions.model.Suggestion
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var suggestion: Suggestion? = null
@@ -62,34 +69,78 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
         txtBody.setText(body)
         btnExpand.setOnClickListener {
-            if(detailContainer.layoutParams.height == 0){
-                detailContainer.layoutParams.height = -2
-                detailContainer.requestLayout()
-                btnExpand.setImageResource(R.drawable.ic_arrow_down_black_24dp)
+            if(detailContainer.visibility == View.GONE){
+                expandView(detailContainer)
+                btnExpand.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp)
             } else {
-                detailContainer.layoutParams.height = 0
-                detailContainer.requestLayout()
-                btnExpand.setImageResource(R.drawable.ic_arrow_left_black_24dp)
+                shrinkView(detailContainer)
+                btnExpand.setImageResource(R.drawable.ic_arrow_down_black_24dp)
             }
         }
 
         btnLike.setOnClickListener {
             //TODO: send put
             this.suggestion!!.hits.setHitContext(Hits.UserHit.LIKE)
-//            updateHit(Hits.UserHit.LIKE)
-//            this.suggestion!!.hits.likes++
-//            (it as ImageButton).setImageResource(R.drawable.ic_thumb_up_black_24dp)
-//            lblLike.text = "${this.suggestion!!.hits.likes}"
         }
 
         btnDislike.setOnClickListener {
             //TODO: send put
             this.suggestion!!.hits.setHitContext(Hits.UserHit.DISLIKE)
-//            this.suggestion!!.hits.dislikes++
-//            (it as ImageButton).setImageResource(R.drawable.ic_thumb_down_black_24dp)
-//            lblDislike.text = "${this.suggestion!!.hits.dislikes}"
         }
 
+    }
+
+    private fun shrinkView(v: View) {
+        v.startAnimation(ShrinkAnim(v))
+    }
+
+    private fun expandView(v: View) {
+        v.visibility = View.VISIBLE
+        val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+            (v.parent as View).width,
+            View.MeasureSpec.EXACTLY
+        )
+        val wrapContentMeasureSpec =
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        v.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+        val targetHeight = v.measuredHeight
+        v.startAnimation(ExpandAnim(v, targetHeight))
+    }
+
+    private class ShrinkAnim(val v: View): Animation(){
+        var initialHeight = v.measuredHeight
+        init {
+            duration = (initialHeight / v.context.resources.displayMetrics.density).toLong()
+
+        }
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            if (interpolatedTime == 1f) {
+                v.visibility = View.GONE
+            } else {
+                v.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+                v.requestLayout()
+            }
+        }
+
+        override fun willChangeBounds(): Boolean {
+            return true
+        }
+    }
+
+    private class ExpandAnim(val v: View, val targetHeight: Int): Animation(){
+        init {
+            duration = (targetHeight / v.context.resources.displayMetrics.density).toLong()
+
+        }
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            v.layoutParams.height = if (interpolatedTime == 1f) ViewGroup.LayoutParams.WRAP_CONTENT
+            else (targetHeight * interpolatedTime).toInt()
+            v.requestLayout()
+        }
+
+        override fun willChangeBounds(): Boolean {
+            return true
+        }
     }
 
     private fun extractDateStr(): String {
@@ -110,14 +161,14 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         lblDislike = itemView.findViewById(R.id.lblDislike)
         btnDislike = itemView.findViewById(R.id.btnDislike)
         refreshButtonSelection(this.suggestion!!.hits.userHit)
-        this.suggestion!!.hits.addObserver { observable: Observable, any: Any ->
-            refreshButtonSelection(any as Hits.UserHit)
+        this.suggestion!!.hits.addObserver { _: Observable, hit: Any ->
+            refreshButtonSelection(hit as Hits.UserHit)
             lblLike.text = "${this.suggestion!!.hits.likes}"
             lblDislike.text = "${this.suggestion!!.hits.dislikes}"
         }
     }
 
-    fun refreshButtonSelection(hit: Hits.UserHit){
+    private fun refreshButtonSelection(hit: Hits.UserHit){
         when(hit){
             Hits.UserHit.LIKE -> {
                 btnLike.isSelected = true
