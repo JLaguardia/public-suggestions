@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.lone_recycler.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
@@ -76,7 +77,14 @@ class MainActivity : AppCompatActivity() {
     private fun generateHits(): Hits {
         val likes = Math.random() * 100
         val dislikes = Math.random() * 100
-        return Hits.Builder().likes(likes.toInt()).dislikes(dislikes.toInt()).build()
+        val hitSeed = Random.nextInt(1,3)
+        var hit: Hits.UserHit = Hits.UserHit.NONE
+        when(hitSeed){
+            1 -> hit = Hits.UserHit.LIKE
+            2 -> hit = Hits.UserHit.DISLIKE
+            3 -> hit = Hits.UserHit.NONE
+        }
+        return Hits.Builder().likes(likes.toInt()).dislikes(dislikes.toInt()).userHit(hit).build()
     }
 
     private fun genCategory(): Category {

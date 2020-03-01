@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.prismsoftworks.publicsuggestions.R
+import com.prismsoftworks.publicsuggestions.model.Hits
 import com.prismsoftworks.publicsuggestions.model.Suggestion
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,6 +34,7 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
     fun init(suggestion: Suggestion, readOnly: Boolean = true){
+
         this.suggestion = suggestion
         setViews()
         lblCategory.text = suggestion.category.label
@@ -73,14 +75,19 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         btnLike.setOnClickListener {
             //TODO: send put
-            this.suggestion!!.hits.likes++
-            lblLike.text = "${this.suggestion!!.hits.likes}"
+            this.suggestion!!.hits.setHitContext(Hits.UserHit.LIKE)
+//            updateHit(Hits.UserHit.LIKE)
+//            this.suggestion!!.hits.likes++
+//            (it as ImageButton).setImageResource(R.drawable.ic_thumb_up_black_24dp)
+//            lblLike.text = "${this.suggestion!!.hits.likes}"
         }
 
         btnDislike.setOnClickListener {
             //TODO: send put
-            this.suggestion!!.hits.dislikes++
-            lblDislike.text = "${this.suggestion!!.hits.dislikes}"
+            this.suggestion!!.hits.setHitContext(Hits.UserHit.DISLIKE)
+//            this.suggestion!!.hits.dislikes++
+//            (it as ImageButton).setImageResource(R.drawable.ic_thumb_down_black_24dp)
+//            lblDislike.text = "${this.suggestion!!.hits.dislikes}"
         }
 
     }
@@ -102,5 +109,28 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         btnLike = itemView.findViewById(R.id.btnLike)
         lblDislike = itemView.findViewById(R.id.lblDislike)
         btnDislike = itemView.findViewById(R.id.btnDislike)
+        refreshButtonSelection(this.suggestion!!.hits.userHit)
+        this.suggestion!!.hits.addObserver { observable: Observable, any: Any ->
+            refreshButtonSelection(any as Hits.UserHit)
+            lblLike.text = "${this.suggestion!!.hits.likes}"
+            lblDislike.text = "${this.suggestion!!.hits.dislikes}"
+        }
+    }
+
+    fun refreshButtonSelection(hit: Hits.UserHit){
+        when(hit){
+            Hits.UserHit.LIKE -> {
+                btnLike.isSelected = true
+                btnDislike.isSelected = false
+            }
+            Hits.UserHit.DISLIKE -> {
+                btnLike.isSelected = false
+                btnDislike.isSelected = true
+            }
+            Hits.UserHit.NONE -> {
+                btnLike.isSelected = false
+                btnDislike.isSelected = false
+            }
+        }
     }
 }

@@ -76,13 +76,15 @@
             app:layout_constraintStart_toStartOf="@id/lblDatePosted"
             app:layout_constraintEnd_toEndOf="@id/lblDatePosted"
             >
+
             <ImageButton
                 android:id="@+id/btnLike"
-                android:src="@drawable/ic_thumb_up_black_24dp"
+                android:src="@drawable/like_selector"
                 android:background="@null"
                 android:tint="@color/colorLightBlue"
                 android:layout_width="45dp"
                 android:layout_height="45dp"/>
+
             <TextView
                 android:id="@+id/lblLike"
                 style="@style/MetaText"
@@ -107,7 +109,7 @@
 
             <ImageButton
                 android:id="@+id/btnDislike"
-                android:src="@drawable/ic_thumb_down_black_24dp"
+                android:src="@drawable/dislike_selector"
                 android:layout_gravity="end"
                 android:background="@null"
                 android:tint="@color/colorLightRed"
