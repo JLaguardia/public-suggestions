@@ -14,6 +14,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.prismsoftworks.publicsuggestions.R
+import com.prismsoftworks.publicsuggestions.model.Hit
+import com.prismsoftworks.publicsuggestions.model.HitContext
 import com.prismsoftworks.publicsuggestions.model.Hits
 import com.prismsoftworks.publicsuggestions.model.Suggestion
 import java.text.SimpleDateFormat
@@ -79,13 +81,11 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         btnLike.setOnClickListener {
-            //TODO: send put
-            this.suggestion!!.hits.setHitContext(Hits.UserHit.LIKE)
+            this.suggestion!!.hits.setHitContext(HitContext.LIKE)
         }
 
         btnDislike.setOnClickListener {
-            //TODO: send put
-            this.suggestion!!.hits.setHitContext(Hits.UserHit.DISLIKE)
+            this.suggestion!!.hits.setHitContext(HitContext.DISLIKE)
         }
 
     }
@@ -160,25 +160,25 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         btnLike = itemView.findViewById(R.id.btnLike)
         lblDislike = itemView.findViewById(R.id.lblDislike)
         btnDislike = itemView.findViewById(R.id.btnDislike)
-        refreshButtonSelection(this.suggestion!!.hits.userHit)
+        refreshButtonSelection(this.suggestion!!.hits.userHit.hitContext)
         this.suggestion!!.hits.addObserver { _: Observable, hit: Any ->
-            refreshButtonSelection(hit as Hits.UserHit)
+            refreshButtonSelection((hit as Hit).hitContext)
             lblLike.text = "${this.suggestion!!.hits.likes}"
             lblDislike.text = "${this.suggestion!!.hits.dislikes}"
         }
     }
 
-    private fun refreshButtonSelection(hit: Hits.UserHit){
+    private fun refreshButtonSelection(hit: HitContext){
         when(hit){
-            Hits.UserHit.LIKE -> {
+            HitContext.LIKE -> {
                 btnLike.isSelected = true
                 btnDislike.isSelected = false
             }
-            Hits.UserHit.DISLIKE -> {
+            HitContext.DISLIKE -> {
                 btnLike.isSelected = false
                 btnDislike.isSelected = true
             }
-            Hits.UserHit.NONE -> {
+            HitContext.NONE -> {
                 btnLike.isSelected = false
                 btnDislike.isSelected = false
             }

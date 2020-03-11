@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.prismsoftworks.publicsuggestions.adapter.SuggestionAdapter
 import com.prismsoftworks.publicsuggestions.model.Category
+import com.prismsoftworks.publicsuggestions.model.HitContext
 import com.prismsoftworks.publicsuggestions.model.Hits
 import com.prismsoftworks.publicsuggestions.model.Suggestion
 import kotlinx.android.synthetic.main.activity_main.*
@@ -82,13 +83,13 @@ class MainActivity : AppCompatActivity() {
         val likes = Math.random() * 100
         val dislikes = Math.random() * 100
         val hitSeed = Random.nextInt(1,3)
-        var hit: Hits.UserHit = Hits.UserHit.NONE
+        var hit: HitContext = HitContext.NONE
         when(hitSeed){
-            1 -> hit = Hits.UserHit.LIKE
-            2 -> hit = Hits.UserHit.DISLIKE
-            3 -> hit = Hits.UserHit.NONE
+            1 -> hit = HitContext.LIKE
+            2 -> hit = HitContext.DISLIKE
+            3 -> hit = HitContext.NONE
         }
-        return Hits.Builder().likes(likes.toInt()).dislikes(dislikes.toInt()).userHit(hit).build()
+        return Hits.Builder().likes(likes.toInt()).dislikes(dislikes.toInt()).hit(hit).build()
     }
 
     private fun genCategory(): Category {

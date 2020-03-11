@@ -1,37 +1,38 @@
 package com.prismsoftworks.publicsuggestions.model
 
+import com.prismsoftworks.publicsuggestions.network.LikesApi
 import java.util.*
 
 class Hits private constructor(
-    val id: String,
-    val entityId: String,
+    val id: String, //id of hit
+    val entityId: String, //id of context this hit applies to
     var likes: Int,
     var dislikes: Int,
-    var userHit: UserHit): Observable() {
+    var userHit: Hit): Observable() {
 
-    fun setHitContext(userHit: UserHit){
-        if(this.userHit == userHit){
-            when(this.userHit){
-                UserHit.LIKE -> this.likes--
-                UserHit.DISLIKE -> this.dislikes--
+    fun setHitContext(hitContext: HitContext){
+        if(this.userHit.hitContext == hitContext){
+            when(this.userHit.hitContext){
+                HitContext.LIKE -> this.likes--
+                HitContext.DISLIKE -> this.dislikes--
             }
 
-            this.userHit = UserHit.NONE
+            this.userHit.hitContext = HitContext.NONE
         } else {
             //this should be done in backend
-            when(this.userHit){
-                UserHit.LIKE -> {
+            when(this.userHit.hitContext){
+                HitContext.LIKE -> {
                     this.likes--
                     this.dislikes++
                 }
 
-                UserHit.DISLIKE -> {
+                HitContext.DISLIKE -> {
                     this.dislikes--
                     this.likes++
                 }
 
-                UserHit.NONE -> {
-                    if(userHit == UserHit.LIKE){
+                HitContext.NONE -> {
+                    if(hitContext == HitContext.LIKE){
                         this.likes++
                     } else {
                         this.dislikes++
@@ -39,8 +40,11 @@ class Hits private constructor(
                 }
             }
 
-            this.userHit = userHit
+            this.userHit.hitContext = hitContext
         }
+
+        //should this go here?
+        //todo LikesApi.create().putLikeForEntity(this.userHit)
 
         setChanged()
         notifyObservers(this.userHit)
@@ -51,19 +55,13 @@ class Hits private constructor(
         var entityId: String = UUID.randomUUID().toString(),
         var likes: Int = 0,
         var dislikes: Int = 0,
-        var userHit: UserHit = UserHit.NONE
+        var hit: Hit = Hit.Builder().hitContext(HitContext.NONE).build()
     ) {
         fun id(id: String) = apply { this.id = id }
         fun likes(likes: Int) = apply { this.likes = likes }
         fun dislikes(dislikes: Int) = apply { this.dislikes = dislikes }
         fun entityId(entityId: String) = apply { this.entityId = entityId }
-        fun userHit(userHit: UserHit) = apply { this.userHit = userHit }
-        fun build() = Hits(id, entityId, likes, dislikes, userHit)
-    }
-
-    enum class UserHit{
-        LIKE,
-        DISLIKE,
-        NONE
+        fun hit(hitContext: HitContext) = apply { this.hit = Hit.Builder().hitContext(hitContext).build() }
+        fun build() = Hits(id, entityId, likes, dislikes, hit)
     }
 }
