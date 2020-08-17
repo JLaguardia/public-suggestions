@@ -37,16 +37,16 @@ dependencies {
 
     //lifecycle
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-extension:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     kapt "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
     //viewpager
-    implementation 'androidx.viewpager2:viewpager:1.0.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:4.1.2'
 
     //recycler
     implementation "androidx.recyclerview:recyclerview:1.1.0"
-    implementation "androidx.recyclerview:recyclerview-delection:1.1.0-rc1"
+    implementation "androidx.recyclerview:recyclerview-selection:1.1.0-rc01"
 
     //retrofit and moshi
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -62,13 +62,13 @@ dependencies {
     //room
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    kapt "andoridx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     //SQL encryption
-    implementation "com.commonsware.cwac:saferoom.x:1.1.1"
+    //implementation "com.commonsware.cwac:saferoom.x:1.1.1"
 
     //worker
-    implementation "androidx.work:work-runtime-kts:$work_version"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 
     //nav
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
