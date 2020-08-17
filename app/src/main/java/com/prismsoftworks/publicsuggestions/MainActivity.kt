@@ -7,6 +7,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.prismsoftworks.publicsuggestions.adapter.SuggestionAdapter
 import com.prismsoftworks.publicsuggestions.model.Category
@@ -15,15 +16,29 @@ import com.prismsoftworks.publicsuggestions.model.Hits
 import com.prismsoftworks.publicsuggestions.model.Suggestion
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.lone_recycler.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.coroutines.CoroutineContext
 import kotlin.random.Random
+import org.kodein.di.android.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), KodeinAware, CoroutineScope {
+
+
+    override val kodein: Kodein by kodein()
+    private val job = Job() + Dispatchers.Main
+    override val coroutineContext: CoroutineContext = job
+    val navCtrl by lazy { findNavController(R.id.nav_host) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         initialize()
     }
 
@@ -103,6 +118,4 @@ class MainActivity : AppCompatActivity() {
 
         return Category.Builder().build()
     }
-
-
 }
