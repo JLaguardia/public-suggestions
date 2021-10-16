@@ -7,65 +7,68 @@ import android.view.animation.Animation
 import android.view.animation.Transformation
 import androidx.recyclerview.widget.RecyclerView
 import com.prismsoftworks.publicsuggestions.R
+import com.prismsoftworks.publicsuggestions.databinding.SuggestionItemviewBinding
 import com.prismsoftworks.publicsuggestions.model.Hit
 import com.prismsoftworks.publicsuggestions.model.HitContext
 import com.prismsoftworks.publicsuggestions.model.Suggestion
-import kotlinx.android.synthetic.main.suggestion_itemview.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class SuggestionViewHolder(
+    private val binding: SuggestionItemviewBinding,
+    private val listener: (body: String) -> Unit
+) : RecyclerView.ViewHolder(binding.root) {
     private var suggestion: Suggestion? = null
 
-    companion object{
+    companion object {
         var editBg: Drawable? = null
     }
 
-
-    fun init(suggestion: Suggestion, readOnly: Boolean = true){
+    fun init(suggestion: Suggestion, readOnly: Boolean = true) {
         this.suggestion = suggestion
-        with(itemView){
+        with(itemView) {
             setViews()
-            lblCategory.text = suggestion.category.label
-            lblSubject.text = suggestion.subject
-            lblLike.text = "${suggestion.hits.likes}"
-            lblDislike.text = "${suggestion.hits.dislikes}"
-            lblDatePosted.text = extractDateStr()
-            if(readOnly) {
-                if(Objects.isNull(editBg)){
-                    editBg = txtBody.background
+            binding.lblCategory.text = suggestion.category.label
+            binding.lblSubject.text = suggestion.subject
+            binding.lblLike.text = "${suggestion.hits.likes}"
+            binding.lblDislike.text = "${suggestion.hits.dislikes}"
+            binding.lblDatePosted.text = extractDateStr()
+            if (readOnly) {
+                if (Objects.isNull(editBg)) {
+                    editBg = binding.txtBody.background
                 }
 
-                txtBody.setFocusable(false)
-                txtBody.background = null
-                txtBody.setOnLongClickListener { return@setOnLongClickListener true }
+                binding.txtBody.isFocusable = false
+                binding.txtBody.background = null
+                binding.txtBody.setOnLongClickListener { return@setOnLongClickListener true }
             } else {
-                txtBody.setFocusable(true)
-                txtBody.background = editBg
-                txtBody.setOnLongClickListener(null)
+                binding.txtBody.isFocusable = true
+                binding.txtBody.background = editBg
+                binding.txtBody.setOnLongClickListener(null)
             }
 
             var body = suggestion.body
-            if(body.length > 100){
-                body = body.substring(0, 100) + "...  Read more"
+            if (body.length > 100) {
+                body = body.substring(0, 120) + context.getString(R.string.read_more)
+                binding.txtBody.setOnClickListener { listener(suggestion.body) }
             }
-            txtBody.setText(body)
-            btnExpand.setOnClickListener {
-                if(detailContainer.visibility == View.GONE){
-                    expandView(detailContainer)
-                    btnExpand.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp)
+            binding.txtBody.setText(body)
+            binding.btnExpand.setOnClickListener {
+                if (binding.detailContainer.visibility == View.GONE) {
+                    expandView(binding.detailContainer)
+                    binding.btnExpand.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp)
                 } else {
-                    shrinkView(detailContainer)
-                    btnExpand.setImageResource(R.drawable.ic_arrow_down_black_24dp)
+                    shrinkView(binding.detailContainer)
+                    binding.btnExpand.setImageResource(R.drawable.ic_arrow_down_black_24dp)
                 }
             }
 
-            btnLike.setOnClickListener {
+            binding.btnLike.setOnClickListener {
                 suggestion.hits.setHitContext(HitContext.LIKE)
             }
 
-            btnDislike.setOnClickListener {
+            binding.btnDislike.setOnClickListener {
                 suggestion.hits.setHitContext(HitContext.DISLIKE)
             }
         }
@@ -89,12 +92,14 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         v.startAnimation(ExpandAnim(v, targetHeight))
     }
 
-    private class ShrinkAnim(val v: View): Animation(){
+    private class ShrinkAnim(val v: View) : Animation() {
         var initialHeight = v.measuredHeight
+
         init {
             duration = (initialHeight / v.context.resources.displayMetrics.density).toLong()
 
         }
+
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
             if (interpolatedTime == 1f) {
                 v.visibility = View.GONE
@@ -109,11 +114,12 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
     }
 
-    private class ExpandAnim(val v: View, val targetHeight: Int): Animation(){
+    private class ExpandAnim(val v: View, val targetHeight: Int) : Animation() {
         init {
             duration = (targetHeight / v.context.resources.displayMetrics.density).toLong()
 
         }
+
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
             v.layoutParams.height = if (interpolatedTime == 1f) ViewGroup.LayoutParams.WRAP_CONTENT
             else (targetHeight * interpolatedTime).toInt()
@@ -126,8 +132,10 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     private fun extractDateStr(): String {
-        return "Posted on ${SimpleDateFormat("MMM, dd, yy - hh:mm:ss aa", Locale.US)
-            .format(suggestion!!.dateSubmitted)}"
+        return "Posted on ${
+            SimpleDateFormat("MMM, dd, yy - hh:mm:ss aa", Locale.US)
+                .format(suggestion!!.dateSubmitted)
+        }"
     }
 
     private fun setViews() {
@@ -135,26 +143,26 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         this.suggestion!!.hits.addObserver { _: Observable, hit: Any ->
             refreshButtonSelection((hit as Hit).hitContext)
             with(itemView) {
-                lblLike.text = "${suggestion!!.hits.likes}"
-                lblDislike.text = "${suggestion!!.hits.dislikes}"
+                binding.lblLike.text = "${suggestion!!.hits.likes}"
+                binding.lblDislike.text = "${suggestion!!.hits.dislikes}"
             }
         }
     }
 
-    private fun refreshButtonSelection(hit: HitContext){
+    private fun refreshButtonSelection(hit: HitContext) {
         with(itemView) {
             when (hit) {
                 HitContext.LIKE -> {
-                    btnLike.isSelected = true
-                    btnDislike.isSelected = false
+                    binding.btnLike.isSelected = true
+                    binding.btnDislike.isSelected = false
                 }
                 HitContext.DISLIKE -> {
-                    btnLike.isSelected = false
-                    btnDislike.isSelected = true
+                    binding.btnLike.isSelected = false
+                    binding.btnDislike.isSelected = true
                 }
                 HitContext.NONE -> {
-                    btnLike.isSelected = false
-                    btnDislike.isSelected = false
+                    binding.btnLike.isSelected = false
+                    binding.btnDislike.isSelected = false
                 }
             }
         }
